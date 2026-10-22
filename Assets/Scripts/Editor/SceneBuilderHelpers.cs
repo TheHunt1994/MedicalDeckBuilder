@@ -16,6 +16,16 @@ namespace MedicalDeck.EditorTools
 
         public static void CreateCanvasRoot(string canvasName, out RectTransform root)
         {
+            if (UnityEngine.Object.FindFirstObjectByType<Camera>() == null)
+            {
+                var cameraGo = new GameObject("Main Camera", typeof(Camera), typeof(AudioListener));
+                var cam = cameraGo.GetComponent<Camera>();
+                cam.clearFlags = CameraClearFlags.SolidColor;
+                cam.backgroundColor = new Color(0.13f, 0.15f, 0.18f);
+                cam.orthographic = true;
+                cameraGo.tag = "MainCamera";
+            }
+
             var canvasGo = new GameObject(canvasName, typeof(Canvas), typeof(CanvasScaler), typeof(GraphicRaycaster));
             var canvas = canvasGo.GetComponent<Canvas>();
             canvas.renderMode = RenderMode.ScreenSpaceOverlay;

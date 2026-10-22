@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7109bab921cdd7a428956cd1cad1d867, type: 3}
+  m_Name: Covid-19
+  m_EditorClassIdentifier: Assembly-CSharp::MedicalDeck.Data.CardData
+  cardName: Covid-19
+  description: 'A virus that spread throughout the world and killed millions of people.  '
+  cardType: 0
+  validTarget: 2
+  requiresTarget: 1
+  effects:
+  - effectId: infect
+    amount: 1
+    duration: 3
+  cardArt: {fileID: 0}
