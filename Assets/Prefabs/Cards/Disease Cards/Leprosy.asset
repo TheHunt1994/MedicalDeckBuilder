@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7109bab921cdd7a428956cd1cad1d867, type: 3}
+  m_Name: Leprosy
+  m_EditorClassIdentifier: Assembly-CSharp::MedicalDeck.Data.CardData
+  cardName: Leprosy
+  description: 'Spreadable.  Infect one person.  If uncured by end of next turn spreads
+    to the people directly to either side of the infected person.  Deals 1 damage
+    per turn.  '
+  cardType: 0
+  validTarget: 2
+  requiresTarget: 1
+  effects: []
+  cardArt: {fileID: 1022592202897738384, guid: efbd0ad887427f9489c06e52dcbf3e2f, type: 3}

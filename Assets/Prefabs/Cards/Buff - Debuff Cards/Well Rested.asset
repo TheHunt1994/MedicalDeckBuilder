@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7109bab921cdd7a428956cd1cad1d867, type: 3}
+  m_Name: Well Rested
+  m_EditorClassIdentifier: Assembly-CSharp::MedicalDeck.Data.CardData
+  cardName: Well Rested
+  description: 'Dungeons and Dragons rules apply, after a full nights rest you are
+    back to full health.  '
+  cardType: 1
+  validTarget: 2
+  requiresTarget: 1
+  effects:
+  - effectId: buff_heal_power
+    amount: 5
+    duration: 1
+  cardArt: {fileID: -2813090194141395899, guid: c98d67268d3a00f45a27f2617ce9f270, type: 3}

@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7109bab921cdd7a428956cd1cad1d867, type: 3}
+  m_Name: Malnurished
+  m_EditorClassIdentifier: Assembly-CSharp::MedicalDeck.Data.CardData
+  cardName: Malnourished
+  description: 'You are Malnurished.  Buffs take one extra turn to apply to the target.  '
+  cardType: 2
+  validTarget: 2
+  requiresTarget: 1
+  effects:
+  - effectId: buff_heal_power
+    amount: -1
+    duration: 1
+  cardArt: {fileID: 5507675486939692157, guid: e7093487167f286438ecc2fb6af068c6, type: 3}

@@ -10,15 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7109bab921cdd7a428956cd1cad1d867, type: 3}
-  m_Name: Covid-19
+  m_Name: Smallpox
   m_EditorClassIdentifier: Assembly-CSharp::MedicalDeck.Data.CardData
-  cardName: Covid-19
-  description: 'A virus that spread throughout the world and killed millions of people.  '
+  cardName: Smallpox
+  description: 'Highly Infectious.  If not cured by end of next round, it will spread
+    to the people on either side of the infected.  Deals 2 damage per turn until
+    cured.  '
   cardType: 0
   validTarget: 2
   requiresTarget: 1
-  effects:
-  - effectId: infect
-    amount: 1
-    duration: 3
-  cardArt: {fileID: 0}
+  effects: []
+  cardArt: {fileID: -6099509981771553918, guid: 131b63c8d43b75c4296a9197097233cd, type: 3}

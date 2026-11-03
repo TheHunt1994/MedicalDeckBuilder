@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7109bab921cdd7a428956cd1cad1d867, type: 3}
+  m_Name: Cancer
+  m_EditorClassIdentifier: Assembly-CSharp::MedicalDeck.Data.CardData
+  cardName: Cancer
+  description: 'The most difficult disease to cure.  Takes 2 treatments to fully
+    heal.  Will cause 1 damage every round it is not cured.  '
+  cardType: 0
+  validTarget: 2
+  requiresTarget: 1
+  effects:
+  - effectId: 
+    amount: 0
+    duration: 0
+  cardArt: {fileID: 3638158211783163141, guid: 8bc8c650d9aaeb0459fbc52a34110edb, type: 3}

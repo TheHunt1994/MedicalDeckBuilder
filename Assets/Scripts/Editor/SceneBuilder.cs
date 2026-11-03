@@ -1,6 +1,7 @@
 using MedicalDeck.Gameplay;
 using MedicalDeck.UI;
 using UnityEditor;
+using UnityEditor.Events;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.UI;
@@ -30,36 +31,51 @@ namespace MedicalDeck.EditorTools
             var editor = editorGo.AddComponent<DeckEditorMenu>();
 
             var title = SceneBuilderHelpers.CreateText(root, "Title", "DECK EDITOR — build your deck, then start the match",
-                new Vector2(0, -60), new Vector2(900, 50), 34, TextAnchor.MiddleCenter);
+                new Vector2(0, -45), new Vector2(900, 50), 34, TextAnchor.MiddleCenter);
             ((RectTransform)title.transform).anchorMin = new Vector2(0.5f, 1f);
             ((RectTransform)title.transform).anchorMax = new Vector2(0.5f, 1f);
 
-            var collectionPanel = SceneBuilderHelpers.CreatePanel(root, "CollectionPanel", new Vector2(0.03f, 0.08f), new Vector2(0.48f, 0.88f));
-            var deckPanel = SceneBuilderHelpers.CreatePanel(root, "DeckPanel", new Vector2(0.52f, 0.08f), new Vector2(0.97f, 0.88f));
+            var collectionScroll = SceneBuilderHelpers.CreateScrollableGrid(root, "CollectionScroll", new Vector2(0.03f, 0.16f), new Vector2(0.48f, 0.78f), 4, out var collectionContent);
+            var deckScroll = SceneBuilderHelpers.CreateScrollableGrid(root, "DeckScroll", new Vector2(0.52f, 0.16f), new Vector2(0.97f, 0.78f), 4, out var deckContent);
 
-            var collHeader = SceneBuilderHelpers.CreateText(collectionPanel, "CollHeader", "ALL CARDS (click to add)", new Vector2(0, -25), new Vector2(400, 30), 22, TextAnchor.MiddleCenter);
+            var collHeader = SceneBuilderHelpers.CreateText(collectionScroll, "CollHeader", "ALL CARDS (click to add)", new Vector2(0, -25), new Vector2(400, 30), 22, TextAnchor.MiddleCenter);
             StretchTop((RectTransform)collHeader.transform);
-            var deckHeader = SceneBuilderHelpers.CreateText(deckPanel, "DeckHeader", "YOUR DECK (click to remove)", new Vector2(0, -25), new Vector2(400, 30), 22, TextAnchor.MiddleCenter);
+            var deckHeader = SceneBuilderHelpers.CreateText(deckScroll, "DeckHeader", "YOUR DECK (click a card to remove one copy)", new Vector2(0, -25), new Vector2(400, 30), 22, TextAnchor.MiddleCenter);
             StretchTop((RectTransform)deckHeader.transform);
-
-            var cardRowPrefab = SceneBuilderHelpers.CreateCardRowPrefabAsset();
+            var tilePrefab = SceneBuilderHelpers.CreateCardTilePrefabAsset();
 
             var deckCountText = SceneBuilderHelpers.CreateText(root, "DeckCount", "Deck: 0/30", new Vector2(0, 0), new Vector2(300, 40), 24, TextAnchor.MiddleCenter);
             ((RectTransform)deckCountText.transform).anchorMin = new Vector2(0.5f, 0f);
             ((RectTransform)deckCountText.transform).anchorMax = new Vector2(0.5f, 0f);
-            ((RectTransform)deckCountText.transform).anchoredPosition = new Vector2(0, 30);
+            ((RectTransform)deckCountText.transform).anchoredPosition = new Vector2(0, 32);
 
-            var startButton = SceneBuilderHelpers.CreateButton(root, "StartButton", "START MATCH", new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(-100, 75), new Vector2(100, 135));
-            startButton.onClick.AddListener(() =>
-            {
-                var menu = Object.FindFirstObjectByType<DeckEditorMenu>();
-                if (menu != null) menu.StartMatch();
-            });
+            var startButton = SceneBuilderHelpers.CreateButton(root, "StartButton", "START MATCH", new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(-100, 80), new Vector2(100, 140));
+            UnityEventTools.AddPersistentListener(startButton.onClick, editor.StartMatch);
+
+            var previewPanel = SceneBuilderHelpers.CreateFloatingPanel(root, "PreviewPanel", new Vector2(360, 540), new Color(0.15f, 0.17f, 0.2f, 0.95f));
+            var previewImage = previewPanel.GetComponent<Image>();
+            previewImage.raycastTarget = false;
+            var previewArt = SceneBuilderHelpers.CreateImage(previewPanel, "PreviewArt", new Vector2(0, 120), new Vector2(260, 260), Color.white);
+            previewArt.raycastTarget = false;
+            var previewName = SceneBuilderHelpers.CreateText(previewPanel, "PreviewName", "", new Vector2(0, -50), new Vector2(280, 36), 28, TextAnchor.MiddleCenter);
+            previewName.raycastTarget = false;
+            var previewDesc = SceneBuilderHelpers.CreateText(previewPanel, "PreviewDesc", "", new Vector2(0, -130), new Vector2(300, 150), 18, TextAnchor.UpperCenter);
+            previewDesc.raycastTarget = false;
+            previewPanel.gameObject.SetActive(false);
+            var addDialog = SceneBuilderHelpers.CreatePanel(root, "AddDialog", Vector2.zero, Vector2.one, new Color(0, 0, 0, 0.6f));
+            var dialogBox = SceneBuilderHelpers.CreatePanel(addDialog, "DialogBox", new Vector2(0.34f, 0.24f), new Vector2(0.66f, 0.76f), new Color(0.9f, 0.9f, 0.95f, 1f));
+
+            var dialogArt = SceneBuilderHelpers.CreateImage(dialogBox, "DialogArt", new Vector2(0, 120), new Vector2(180, 180), Color.white);
+            var dialogName = SceneBuilderHelpers.CreateText(dialogBox, "DialogName", "", new Vector2(0, -5), new Vector2(300, 34), 26, TextAnchor.MiddleCenter);
+            var dialogDesc = SceneBuilderHelpers.CreateText(dialogBox, "DialogDesc", "", new Vector2(0, -50), new Vector2(320, 70), 16, TextAnchor.UpperCenter);
+            var dialogQuestion = SceneBuilderHelpers.CreateText(dialogBox, "DialogQuestion", "Add this card to your deck?", new Vector2(0, -130), new Vector2(320, 28), 20, TextAnchor.MiddleCenter);
+            var confirmButton = SceneBuilderHelpers.CreateButton(dialogBox, "ConfirmButton", "CONFIRM", new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(-150, -62), new Vector2(-10, -14));
+            var cancelButton = SceneBuilderHelpers.CreateButton(dialogBox, "CancelButton", "CANCEL", new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(10, -62), new Vector2(150, -14));
+            UnityEventTools.AddPersistentListener(confirmButton.onClick, editor.ConfirmAdd);
+            UnityEventTools.AddPersistentListener(cancelButton.onClick, editor.CancelAdd);
+            addDialog.gameObject.SetActive(false);
 
             var so = new SerializedObject(editor);
-            SceneBuilderHelpers.SetProp(so, "allCards", null);
-            so.ApplyModifiedPropertiesWithoutUndo();
-
             var cards = SceneBuilderHelpers.FindAllCards();
             var cardsProp = so.FindProperty("allCards");
             so.Update();
@@ -68,11 +84,17 @@ namespace MedicalDeck.EditorTools
             {
                 cardsProp.GetArrayElementAtIndex(i).objectReferenceValue = cards[i];
             }
-            SceneBuilderHelpers.SetProp(so, "collectionListContainer", collectionPanel);
-            SceneBuilderHelpers.SetProp(so, "deckListContainer", deckPanel);
-            SceneBuilderHelpers.SetProp(so, "cardRowPrefab", cardRowPrefab.GetComponent<MedicalDeck.UI.DeckEditorCardRow>());
-            SceneBuilderHelpers.SetProp(so, "deckRowPrefab", cardRowPrefab.GetComponent<MedicalDeck.UI.DeckEditorCardRow>());
+            SceneBuilderHelpers.SetProp(so, "collectionGrid", collectionContent);
+            SceneBuilderHelpers.SetProp(so, "deckGrid", deckContent); SceneBuilderHelpers.SetProp(so, "tilePrefab", tilePrefab.GetComponent<DeckEditorCardRow>());
             SceneBuilderHelpers.SetProp(so, "deckCountText", deckCountText);
+            SceneBuilderHelpers.SetProp(so, "addDialog", addDialog.gameObject);
+            SceneBuilderHelpers.SetProp(so, "addDialogNameText", dialogName);
+            SceneBuilderHelpers.SetProp(so, "addDialogDescText", dialogDesc);
+            SceneBuilderHelpers.SetProp(so, "addDialogArtImage", dialogArt);
+            SceneBuilderHelpers.SetProp(so, "previewPanel", previewPanel.gameObject);
+            SceneBuilderHelpers.SetProp(so, "previewArtImage", previewArt);
+            SceneBuilderHelpers.SetProp(so, "previewNameText", previewName);
+            SceneBuilderHelpers.SetProp(so, "previewDescText", previewDesc);
             so.ApplyModifiedPropertiesWithoutUndo();
 
             if (!AssetDatabase.IsValidFolder("Assets/Scenes"))
@@ -222,9 +244,8 @@ namespace MedicalDeck.EditorTools
             gameOverPanel.gameObject.SetActive(false);
             var gameOverText = SceneBuilderHelpers.CreateText(gameOverPanel, "GameOverText", "", new Vector2(0, 20), new Vector2(500, 60), 30, TextAnchor.MiddleCenter);
             var backToMenuButton = SceneBuilderHelpers.CreateButton(gameOverPanel, "BackToMenuButton", "BACK TO MENU", new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(-150, -60), new Vector2(150, -20));
-            backToMenuButton.onClick.AddListener(() => battleUI.LoadMenuScene());
-            var rematchButton = SceneBuilderHelpers.CreateButton(gameOverPanel, "RematchButton", "REMATCH", new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(10, -60), new Vector2(170, -20));
-            rematchButton.onClick.AddListener(() => battleUI.LoadBattleScene());
+            UnityEventTools.AddPersistentListener(backToMenuButton.onClick, battleUI.LoadMenuScene); var rematchButton = SceneBuilderHelpers.CreateButton(gameOverPanel, "RematchButton", "REMATCH", new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(10, -60), new Vector2(170, -20));
+            UnityEventTools.AddPersistentListener(rematchButton.onClick, battleUI.LoadBattleScene);
 
             var so = new SerializedObject(battleUI);
             SceneBuilderHelpers.SetProp(so, "roundLabel", roundLabel);
