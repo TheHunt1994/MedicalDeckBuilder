@@ -17,13 +17,6 @@ namespace MedicalDeck.Gameplay
         public int remainingRounds;
     }
 
-    public class PendingBuff
-    {
-        public string buffId;
-        public int amount;
-        public int duration;
-    }
-
     public class FamilyMember
     {
         public FamilyMemberData Data { get; }
@@ -32,12 +25,20 @@ namespace MedicalDeck.Gameplay
         public int Infection { get; private set; }
         public bool IsDead => CurrentHealth <= 0;
 
-        private readonly List<ActiveBuff> buffs = new List<ActiveBuff>();
-        private readonly List<PendingBuff> pendingBuffs = new List<PendingBuff>();
-        private int oneShotDiseaseAmplify;
+        public HealthStage Stage
+        {
+            get
+            {
+                if (IsDead) return HealthStage.Dead;
+                if (CurrentHealth * 100 < Data.maxHealth * Data.injuredBelowPercent) return HealthStage.Injured;
+                return HealthStage.Full;
+            }
+        }
 
+        public Sprite StageArt => Data.GetStageArt(Stage);
+
+        private readonly List<ActiveBuff> buffs = new List<ActiveBuff>();
         public IReadOnlyList<ActiveBuff> Buffs => buffs;
-        public IReadOnlyList<PendingBuff> PendingBuffs => pendingBuffs;
 
         public event System.Action<FamilyMember> OnStatsChanged;
         public event System.Action<FamilyMember> OnDeath;
@@ -50,34 +51,17 @@ namespace MedicalDeck.Gameplay
             Infection = 0;
         }
 
-        public int GetDiseaseReduction()
-        {
-            int total = 0;
-            foreach (var b in buffs) if (b.buffId == "disease_shield") total += b.amount;
-            return total;
-        }
-
-        public int GetDiseaseAmplification()
-        {
-            int total = oneShotDiseaseAmplify;
-            foreach (var b in buffs) if (b.buffId == "disease_amplify") total += b.amount;
-            return total;
-        }
-
-        public bool HasBuff(string buffId) => buffs.Exists(b => b.buffId == buffId);
-
         public void ApplyDamage(int amount)
         {
             if (amount <= 0 || IsDead) return;
-            CurrentHealth -= amount;
-            OnStatsChanged?.Invoke(this);
+            CurrentHealth = Mathf.Max(0, CurrentHealth - amount);
             CheckDeath();
+            OnStatsChanged?.Invoke(this);
         }
 
         public void ApplyInfection(int amount)
         {
             if (amount <= 0 || IsDead) return;
-            if (HasBuff("quarantine")) return;
             Infection += amount;
             OnStatsChanged?.Invoke(this);
         }
@@ -85,7 +69,6 @@ namespace MedicalDeck.Gameplay
         public void ApplyHeal(int amount)
         {
             if (amount <= 0 || IsDead) return;
-            if (HasBuff("block_heal")) return;
             CurrentHealth = Mathf.Min(CurrentHealth + amount, Data.maxHealth);
             OnStatsChanged?.Invoke(this);
         }
@@ -93,29 +76,29 @@ namespace MedicalDeck.Gameplay
         public void RestoreFullHealth()
         {
             if (IsDead) return;
-            CurrentHealth = Data.maxHealth;
+            CurrentHealth = Data.maxHealth + GetBuffAmount("max_health");
             OnStatsChanged?.Invoke(this);
         }
 
         public void CleanseInfection(int amount)
         {
-            if (amount <= 0) return;
+            if (amount <= 0 || IsDead) return;
             Infection = Mathf.Max(0, Infection - amount);
             OnStatsChanged?.Invoke(this);
         }
 
+        public void AddOneShotDiseaseAmplify(int percent)
+        {
+            if (IsDead || Infection <= 0 || percent <= 0) return;
+            Infection += Mathf.RoundToInt(Infection * percent / 100f);
+            OnStatsChanged?.Invoke(this);
+        }
+
+        public void AddOneShotDiseaseAmplify() => AddOneShotDiseaseAmplify(100);
+
         public void AddBuff(string buffId, int amount, int duration)
         {
             if (IsDead) return;
-            if (HasBuff("quarantine") && buffId != "quarantine") return;
-
-            if (HasBuff("malnourished") && buffId != "malnourished")
-            {
-                pendingBuffs.Add(new PendingBuff { buffId = buffId, amount = amount, duration = duration });
-                OnStatsChanged?.Invoke(this);
-                return;
-            }
-
             var existing = buffs.Find(b => b.buffId == buffId);
             if (existing != null)
             {
@@ -129,14 +112,6 @@ namespace MedicalDeck.Gameplay
             OnStatsChanged?.Invoke(this);
         }
 
-        public void AddOneShotDiseaseAmplify(int amount)
-        {
-            if (IsDead) return;
-            if (HasBuff("quarantine")) return;
-            oneShotDiseaseAmplify += amount;
-            OnStatsChanged?.Invoke(this);
-        }
-
         public int GetBuffAmount(string buffId)
         {
             var buff = buffs.Find(b => b.buffId == buffId);
@@ -145,35 +120,27 @@ namespace MedicalDeck.Gameplay
 
         public void TickBuffs()
         {
+            if (IsDead) return;
             for (int i = buffs.Count - 1; i >= 0; i--)
             {
                 buffs[i].remainingRounds--;
                 if (buffs[i].remainingRounds <= 0) buffs.RemoveAt(i);
             }
-
-            for (int i = pendingBuffs.Count - 1; i >= 0; i--)
-            {
-                var pending = pendingBuffs[i];
-                buffs.Add(new ActiveBuff { buffId = pending.buffId, amount = pending.amount, remainingRounds = pending.duration });
-                pendingBuffs.RemoveAt(i);
-            }
-
             OnStatsChanged?.Invoke(this);
         }
 
         public void TickInfection(int damagePerStack)
         {
-            if (Infection <= 0 && GetDiseaseAmplification() == 0) return;
-            int raw = Infection * damagePerStack;
-            int amplified = raw + GetDiseaseAmplification();
-            int final = Mathf.Max(0, amplified - GetDiseaseReduction());
-            oneShotDiseaseAmplify = 0;
-            if (final > 0) ApplyDamage(final);
+            if (IsDead || Infection <= 0) return;
+            ApplyDamage(Infection * damagePerStack);
         }
 
         private void CheckDeath()
         {
-            if (IsDead) OnDeath?.Invoke(this);
+            if (!IsDead) return;
+            buffs.Clear();
+            Infection = 0;
+            OnDeath?.Invoke(this);
         }
     }
 }

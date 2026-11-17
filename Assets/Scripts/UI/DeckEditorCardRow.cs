@@ -13,13 +13,12 @@ namespace MedicalDeck.UI
         [SerializeField] private Text countText;
         [SerializeField] private Image artImage;
         [SerializeField] private Button actionButton;
+        [SerializeField] private Text actionButtonText;
 
         private CardData data;
         private Action actionCallback;
         private Action<CardData> hoverEnterCallback;
         private Action hoverExitCallback;
-
-        public CardData Data => data;
 
         private void Awake()
         {
@@ -35,28 +34,23 @@ namespace MedicalDeck.UI
             hoverExitCallback = onHoverExit;
             if (cardNameText != null) cardNameText.text = data.cardName;
             if (descriptionText != null) descriptionText.text = data.description;
+            if (countText != null) countText.text = ownedCount.ToString();
             if (artImage != null) artImage.sprite = data.cardArt;
-            ShowCount(ownedCount);
         }
 
-        public void ShowCount(int count)
+        public void OnPointerEnter(PointerEventData eventData)
         {
-            if (countText != null) countText.text = count > 1 ? $"x{count}" : "";
+            hoverEnterCallback?.Invoke(data);
+        }
+
+        public void OnPointerExit(PointerEventData eventData)
+        {
+            hoverExitCallback?.Invoke();
         }
 
         private void HandleClicked()
         {
             actionCallback?.Invoke();
-        }
-
-        public void OnPointerEnter(PointerEventData eventData)
-        {
-            if (data != null && hoverEnterCallback != null) hoverEnterCallback(data);
-        }
-
-        public void OnPointerExit(PointerEventData eventData)
-        {
-            if (hoverExitCallback != null) hoverExitCallback();
         }
     }
 }

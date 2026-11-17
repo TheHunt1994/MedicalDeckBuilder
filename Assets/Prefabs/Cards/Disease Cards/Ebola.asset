@@ -19,7 +19,7 @@ MonoBehaviour:
   validTarget: 2
   requiresTarget: 1
   effects:
-  - effectId: 
-    amount: 0
-    duration: 0
+  - effectId: 0
+    amount: 2
+    duration: 2
   cardArt: {fileID: 1473077212600545279, guid: 51126ae665f179e4d9499a95a9c37a57, type: 3}

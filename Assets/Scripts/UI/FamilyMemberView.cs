@@ -25,6 +25,7 @@ namespace MedicalDeck.UI
         {
             if (selectButton == null) selectButton = GetComponent<Button>();
             selectButton.onClick.AddListener(HandleClicked);
+            if (artImage != null) artImage.preserveAspect = true;
         }
 
         public void Bind(FamilyMember familyMember)
@@ -54,7 +55,7 @@ namespace MedicalDeck.UI
                     sb.Append($"[{buff.buffId} +{buff.amount} ({buff.remainingRounds})] ");
                 buffText.text = sb.ToString();
             }
-            if (artImage != null) artImage.sprite = member.Data.memberArt;
+            if (artImage != null) artImage.sprite = member.StageArt;
             if (infectionOverlayImage != null)
             {
                 infectionOverlayImage.gameObject.SetActive(member.Infection > 0);
@@ -72,7 +73,7 @@ namespace MedicalDeck.UI
         {
             if (member == null || match == null) return;
             match.SelectTarget(member);
-            SetHighlighted(true);
+            if (!member.IsDead) SetHighlighted(true);
         }
     }
 }

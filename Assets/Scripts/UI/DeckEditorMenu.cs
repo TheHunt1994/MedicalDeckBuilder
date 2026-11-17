@@ -19,31 +19,24 @@ namespace MedicalDeck.UI
         [SerializeField] private Text deckCountText;
         [SerializeField] private int minDeckSize = 10;
         [SerializeField] private int maxDeckSize = 30;
-        [SerializeField] private int maxCopiesPerCard = 3;
 
-        [Header("Add Confirmation Dialog")]
+        [Header("Add Dialog")]
         [SerializeField] private GameObject addDialog;
         [SerializeField] private Text addDialogNameText;
         [SerializeField] private Text addDialogDescText;
         [SerializeField] private Image addDialogArtImage;
 
-        [Header("Card Preview")]
+        [Header("Preview Panel")]
         [SerializeField] private GameObject previewPanel;
         [SerializeField] private Image previewArtImage;
         [SerializeField] private Text previewNameText;
         [SerializeField] private Text previewDescText;
-        [SerializeField] private float previewDelaySeconds = 1f;
-        [SerializeField] private float cursorGapPixels = 40f;
 
         [Header("Battle")]
         [SerializeField] private string battleSceneName = "BattleScene";
 
-        private readonly List<CardData> workingDeck = new List<CardData>();
-        private CardData pendingAddCard;
-        private RectTransform previewRect;
-        private Canvas parentCanvas;
-        private CardData hoveredCard;
-        private Coroutine previewRoutine;
+        private List<CardData> workingDeck = new List<CardData>();
+        private CardData pendingAdd;
 
         public static class DeckPersistence
         {
@@ -73,73 +66,48 @@ namespace MedicalDeck.UI
 
         private void Start()
         {
-            var saved = DeckPersistence.Load(allCards);
-            workingDeck.Clear();
-            workingDeck.AddRange(saved);
-            if (previewPanel != null) previewRect = previewPanel.GetComponent<RectTransform>();
-            parentCanvas = previewPanel != null ? previewPanel.GetComponentInParent<Canvas>() : null;
-            RebuildCollectionList();
-            RebuildDeckList();
-        }
-
-        private void Update()
-        {
-            if (previewPanel != null && previewPanel.activeSelf && previewRect != null)
+            workingDeck = DeckPersistence.Load(allCards);
+            if (workingDeck.Count == 0)
             {
-                PositionPreviewBesideCursor();
+                foreach (var card in allCards) workingDeck.Add(card);
             }
+            if (addDialog != null) addDialog.SetActive(false);
+            if (previewPanel != null) previewPanel.SetActive(false);
+            RebuildCollectionGrid();
+            RebuildDeckGrid();
         }
 
-        private int CopiesInDeck(CardData card)
-        {
-            return workingDeck.Count(c => c.cardName == card.cardName);
-        }
-
-        private void RebuildCollectionList()
+        private void RebuildCollectionGrid()
         {
             ClearContainer(collectionGrid);
             if (collectionGrid == null || tilePrefab == null) return;
-            foreach (var card in allCards.OrderBy(c => c.cardName))
+            foreach (var card in allCards)
             {
                 var tile = Instantiate(tilePrefab, collectionGrid);
-                tile.Bind(card, CopiesInDeck(card), () => RequestAdd(card), ShowPreview, HidePreview);
+                int count = workingDeck.Count(c => c == card);
+                tile.Bind(card, count, () => OpenAddDialog(card), c => ShowPreview(c), () => HidePreview());
             }
         }
 
-        private void RebuildDeckList()
+        private void RebuildDeckGrid()
         {
             ClearContainer(deckGrid);
             if (deckGrid == null || tilePrefab == null) return;
-
-            var uniqueSorted = workingDeck
-                .GroupBy(c => c.cardName)
-                .Select(g => g.First())
-                .OrderBy(c => c.cardName);
-
-            foreach (var card in uniqueSorted)
+            int index = 0;
+            foreach (var card in workingDeck)
             {
+                int capturedIndex = index;
                 var tile = Instantiate(tilePrefab, deckGrid);
-                tile.Bind(card, CopiesInDeck(card), () => RemoveCopy(card), ShowPreview, HidePreview);
+                tile.Bind(card, 1, () => RemoveFromDeck(capturedIndex), c => ShowPreview(c), () => HidePreview());
+                index++;
             }
-
             if (deckCountText != null) deckCountText.text = $"Deck: {workingDeck.Count}/{maxDeckSize}";
         }
 
-        private void RequestAdd(CardData card)
+        private void OpenAddDialog(CardData card)
         {
-            if (card == null) return;
-            if (workingDeck.Count >= maxDeckSize)
-            {
-                Debug.Log($"[DeckEditor] Deck is full ({maxDeckSize} cards).");
-                return;
-            }
-            if (CopiesInDeck(card) >= maxCopiesPerCard)
-            {
-                Debug.Log($"[DeckEditor] Max {maxCopiesPerCard} copies of '{card.cardName}' allowed.");
-                return;
-            }
-
-            pendingAddCard = card;
+            pendingAdd = card;
+            ShowPreview(card);
             if (addDialogNameText != null) addDialogNameText.text = card.cardName;
             if (addDialogDescText != null) addDialogDescText.text = card.description;
             if (addDialogArtImage != null) addDialogArtImage.sprite = card.cardArt;
@@ -148,84 +116,49 @@ namespace MedicalDeck.UI
 
         public void ConfirmAdd()
         {
-            if (pendingAddCard == null) return;
-            workingDeck.Add(pendingAddCard);
-            DeckPersistence.Save(workingDeck);
-            pendingAddCard = null;
+            if (pendingAdd == null) return;
+            if (workingDeck.Count >= maxDeckSize)
+            {
+                Debug.Log($"[DeckEditor] Deck is full ({maxDeckSize}).");
+            }
+            else
+            {
+                workingDeck.Add(pendingAdd);
+                DeckPersistence.Save(workingDeck);
+                RebuildCollectionGrid();
+                RebuildDeckGrid();
+            }
             if (addDialog != null) addDialog.SetActive(false);
-            RebuildCollectionList();
-            RebuildDeckList();
+            pendingAdd = null;
         }
 
         public void CancelAdd()
         {
-            pendingAddCard = null;
             if (addDialog != null) addDialog.SetActive(false);
-        }
-
-        private void RemoveCopy(CardData card)
-        {
-            var match = workingDeck.FirstOrDefault(c => c.cardName == card.cardName);
-            if (match == null) return;
-            workingDeck.Remove(match);
-            DeckPersistence.Save(workingDeck);
-            RebuildCollectionList();
-            RebuildDeckList();
+            pendingAdd = null;
         }
 
         private void ShowPreview(CardData card)
         {
-            hoveredCard = card;
-            if (card == null || previewPanel == null) return;
-            if (previewRoutine != null) StopCoroutine(previewRoutine);
-            previewRoutine = StartCoroutine(PreviewAfterDelay(card));
-        }
-
-        private System.Collections.IEnumerator PreviewAfterDelay(CardData card)
-        {
-            yield return new WaitForSeconds(previewDelaySeconds);
-            if (hoveredCard != card) yield break;
-
+            if (previewPanel == null) return;
+            previewPanel.SetActive(true);
             if (previewArtImage != null) previewArtImage.sprite = card.cardArt;
             if (previewNameText != null) previewNameText.text = card.cardName;
             if (previewDescText != null) previewDescText.text = card.description;
-            previewPanel.SetActive(true);
-            PositionPreviewBesideCursor();
         }
 
         private void HidePreview()
         {
-            hoveredCard = null;
-            if (previewRoutine != null)
-            {
-                StopCoroutine(previewRoutine);
-                previewRoutine = null;
-            }
             if (previewPanel != null) previewPanel.SetActive(false);
         }
 
-        private void PositionPreviewBesideCursor()
+        private void RemoveFromDeck(int index)
         {
-            if (previewRect == null || parentCanvas == null) return;
-            float scale = parentCanvas.scaleFactor;
-            float canvasWidth = Screen.width / scale;
-            float canvasHeight = Screen.height / scale;
-            Vector2 mouse = new Vector2(Input.mousePosition.x / scale, Input.mousePosition.y / scale);
-            Vector2 size = previewRect.sizeDelta;
-            float margin = 10f;
-            float gap = cursorGapPixels;
-
-            bool fitsRight = mouse.x + gap + size.x + margin <= canvasWidth;
-            bool fitsLeft = mouse.x - gap - size.x - margin >= 0f;
-
-            float centerX;
-            if (fitsRight) centerX = mouse.x + gap + size.x * 0.5f;
-            else if (fitsLeft) centerX = mouse.x - gap - size.x * 0.5f;
-            else centerX = Mathf.Clamp(mouse.x, size.x * 0.5f + margin, canvasWidth - size.x * 0.5f - margin);
-
-            float centerY = Mathf.Clamp(mouse.y, size.y * 0.5f + margin, canvasHeight - size.y * 0.5f - margin);
-
-            previewRect.position = new Vector3(centerX, centerY, 0f);
+            if (index < 0 || index >= workingDeck.Count) return;
+            workingDeck.RemoveAt(index);
+            DeckPersistence.Save(workingDeck);
+            RebuildCollectionGrid();
+            RebuildDeckGrid();
         }
 
         private void ClearContainer(RectTransform container)
@@ -242,7 +175,7 @@ namespace MedicalDeck.UI
         {
             if (workingDeck.Count < minDeckSize)
             {
-                Debug.Log($"[DeckEditor] Deck needs at least {minDeckSize} cards. Current: {workingDeck.Count}");
+                Debug.Log($"[DeckEditor] Deck needs at least {minDeckSize} cards.");
                 return;
             }
             DeckPersistence.Save(workingDeck);

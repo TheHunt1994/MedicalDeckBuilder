@@ -1,25 +1,22 @@
 fileFormatVersion: 2
-guid: 38e06823e6db2b3418d31ff121e5c248
+guid: a353b953221a85e4abe32aca409c890b
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -1911546135444974038
-    second: ChildHealthy_0
+      213: 3091530518629734418
+    second: Grandpa_0
   - first:
-      213: 5480496629992421784
-    second: ChildHealthy_1
+      213: 6474691081205655955
+    second: Grandpa_1
   - first:
-      213: -3827767132721538345
-    second: ChildHealthy_2
+      213: 5461815289030591040
+    second: Grandpa_2
   - first:
-      213: -5710715275900257095
-    second: ChildHealthy_3
+      213: -8977831204620303078
+    second: Grandpa_3
   - first:
-      213: 3349495381380206618
-    second: ChildHealthy_4
-  - first:
-      213: -2368996557926300108
-    second: ChildHealthy_5
+      213: -2555804186958154991
+    second: Grandpa_4
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -115,34 +112,12 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: ChildHealthy_0
+      name: Grandpa_0
       rect:
         serializedVersion: 2
-        x: 20
-        y: 0
-        width: 993
-        height: 1500
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: a261809eae2d875e0800000000000000
-      internalID: -1911546135444974038
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: ChildHealthy_1
-      rect:
-        serializedVersion: 2
-        x: 328
-        y: 1471
-        width: 7
+        x: 288
+        y: 1233
+        width: 23
         height: 15
       alignment: 0
       pivot: {x: 0, y: 0}
@@ -152,20 +127,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 8997c67e5a2ae0c40800000000000000
-      internalID: 5480496629992421784
+      spriteID: 218543780a257ea20800000000000000
+      internalID: 3091530518629734418
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: ChildHealthy_2
+      name: Grandpa_1
       rect:
         serializedVersion: 2
-        x: 776
-        y: 1287
-        width: 137
-        height: 107
+        x: 316
+        y: 1201
+        width: 108
+        height: 61
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -174,20 +149,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 7da973bb21a01eac0800000000000000
-      internalID: -3827767132721538345
+      spriteID: 39927a5eb39bad950800000000000000
+      internalID: 6474691081205655955
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: ChildHealthy_3
+      name: Grandpa_2
       rect:
         serializedVersion: 2
-        x: 912
-        y: 661
-        width: 7
-        height: 19
+        x: 842
+        y: 49
+        width: 357
+        height: 1254
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -196,20 +171,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 9bc719696b67fb0b0800000000000000
-      internalID: -5710715275900257095
+      spriteID: 042477341144ccb40800000000000000
+      internalID: 5461815289030591040
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: ChildHealthy_4
+      name: Grandpa_3
       rect:
         serializedVersion: 2
-        x: 918
-        y: 631
-        width: 9
-        height: 45
+        x: 15
+        y: 47
+        width: 405
+        height: 1103
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -218,20 +193,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: a109aff8d4ccb7e20800000000000000
-      internalID: 3349495381380206618
+      spriteID: a1580330616586380800000000000000
+      internalID: -8977831204620303078
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: ChildHealthy_5
+      name: Grandpa_4
       rect:
         serializedVersion: 2
-        x: 403
-        y: 0
-        width: 54
-        height: 7
+        x: 435
+        y: 47
+        width: 396
+        height: 1151
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -240,8 +215,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 4360eaa9e22af1fd0800000000000000
-      internalID: -2368996557926300108
+      spriteID: 11337e812a5f78cd0800000000000000
+      internalID: -2555804186958154991
       vertices: []
       indices: 
       edges: []
@@ -260,12 +235,11 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      ChildHealthy_0: -1911546135444974038
-      ChildHealthy_1: 5480496629992421784
-      ChildHealthy_2: -3827767132721538345
-      ChildHealthy_3: -5710715275900257095
-      ChildHealthy_4: 3349495381380206618
-      ChildHealthy_5: -2368996557926300108
+      Grandpa_0: 3091530518629734418
+      Grandpa_1: 6474691081205655955
+      Grandpa_2: 5461815289030591040
+      Grandpa_3: -8977831204620303078
+      Grandpa_4: -2555804186958154991
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

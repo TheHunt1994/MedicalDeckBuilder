@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 825dbdc83edd36d4e804ad454510860f, type: 3}
+  m_Name: Dog
+  m_EditorClassIdentifier: Assembly-CSharp::MedicalDeck.Data.FamilyMemberData
+  memberName: Dog
+  description: 'Pet of the family
+
+'
+  maxHealth: 5
+  injuredBelowPercent: 80
+  memberArt: {fileID: 1075960842380732296, guid: 3ba7a4030c584bc4cb0d35a844239f63, type: 3}
+  injuredArt: {fileID: 3438731351145131367, guid: 25c643c401de9d74e99aad81f7e80482, type: 3}
+  deadArt: {fileID: -5586144908223030204, guid: 20f67a9dc7362dd478e072f552ae44be, type: 3}

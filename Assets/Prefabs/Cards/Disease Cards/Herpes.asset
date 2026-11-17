@@ -16,8 +16,11 @@ MonoBehaviour:
   description: 'INCURABLE.  This disease takes 2 turns to apply.  Once applied it
     adds +1 to the damage of all diseases.  Countdown is reset when using a cure
     on the infected person.  '
-  cardType: 2
+  cardType: 0
   validTarget: 2
   requiresTarget: 1
-  effects: []
+  effects:
+  - effectId: 8
+    amount: 1
+    duration: 0
   cardArt: {fileID: -76952556905572476, guid: d1f37ab0eb8b71f4cbacdf7ffd201b87, type: 3}

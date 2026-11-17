@@ -1,22 +1,10 @@
 fileFormatVersion: 2
-guid: 503d09f23475a88489562d72cea684cf
+guid: ff922e09764d9c54d85a7d97547294b6
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 333810835285459730
-    second: ElderHealthy_0
-  - first:
-      213: 3658630599449379354
-    second: ElderHealthy_1
-  - first:
-      213: -1498747366412965632
-    second: ElderHealthy_2
-  - first:
-      213: -9221896930358419986
-    second: ElderHealthy_3
-  - first:
-      213: -5532398090243008044
-    second: ElderHealthy_4
+      213: -7790233476911144215
+    second: DadHealthy_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -112,13 +100,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: ElderHealthy_0
+      name: DadHealthy_0
       rect:
         serializedVersion: 2
         x: 0
-        y: 32
-        width: 1003
-        height: 1468
+        y: 0
+        width: 526
+        height: 1010
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -127,96 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 213cd53af2fe1a400800000000000000
-      internalID: 333810835285459730
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: ElderHealthy_1
-      rect:
-        serializedVersion: 2
-        x: 40
-        y: 1175
-        width: 7
-        height: 8
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: a120e8c552116c230800000000000000
-      internalID: 3658630599449379354
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: ElderHealthy_2
-      rect:
-        serializedVersion: 2
-        x: 929
-        y: 807
-        width: 14
-        height: 22
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 00927e00631633be0800000000000000
-      internalID: -1498747366412965632
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: ElderHealthy_3
-      rect:
-        serializedVersion: 2
-        x: 802
-        y: 495
-        width: 16
-        height: 17
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: eed98bef99d350080800000000000000
-      internalID: -9221896930358419986
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: ElderHealthy_4
-      rect:
-        serializedVersion: 2
-        x: 88
-        y: 439
-        width: 7
-        height: 9
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 4d91403bf39f833b0800000000000000
-      internalID: -5532398090243008044
+      spriteID: 9e2ea5b5de783e390800000000000000
+      internalID: -7790233476911144215
       vertices: []
       indices: 
       edges: []
@@ -235,11 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      ElderHealthy_0: 333810835285459730
-      ElderHealthy_1: 3658630599449379354
-      ElderHealthy_2: -1498747366412965632
-      ElderHealthy_3: -9221896930358419986
-      ElderHealthy_4: -5532398090243008044
+      DadHealthy_0: -7790233476911144215
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

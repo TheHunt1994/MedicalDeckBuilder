@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 825dbdc83edd36d4e804ad454510860f, type: 3}
+  m_Name: Daughter
+  m_EditorClassIdentifier: Assembly-CSharp::MedicalDeck.Data.FamilyMemberData
+  memberName: Daughter
+  description: Daughter of the family.
+  maxHealth: 10
+  injuredBelowPercent: 80
+  memberArt: {fileID: 1698496232247378747, guid: c9db7aa8a79c2c645b054fe88cdbfac1, type: 3}
+  injuredArt: {fileID: 1705885055491630662, guid: 5f51822b0a8531745b22ac3df220b59b, type: 3}
+  deadArt: {fileID: -8174393279139979839, guid: d44f918de3dd0e845b411db79131570e, type: 3}

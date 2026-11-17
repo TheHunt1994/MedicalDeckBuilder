@@ -98,7 +98,7 @@ namespace MedicalDeck.EditorTools
             return button;
         }
 
-        public static RectTransform CreatePanel(Transform parent, string name, Vector2 anchorMin, Vector2 anchorMax, Color? color = null)
+        public static RectTransform CreatePanel(Transform parent, string name, Vector2 anchorMin, Vector2 anchorMax)
         {
             var go = new GameObject(name, typeof(RectTransform), typeof(Image));
             var rect = (RectTransform)go.transform;
@@ -107,7 +107,76 @@ namespace MedicalDeck.EditorTools
             rect.anchorMax = anchorMax;
             rect.offsetMin = Vector2.zero;
             rect.offsetMax = Vector2.zero;
-            go.GetComponent<Image>().color = color ?? new Color(0.9f, 0.9f, 0.9f, 0.5f);
+            go.GetComponent<Image>().color = new Color(0.9f, 0.9f, 0.9f, 0.5f);
+            return rect;
+        }
+
+        public static RectTransform CreatePanel(Transform parent, string name, Vector2 anchorMin, Vector2 anchorMax, Color color)
+        {
+            var rect = CreatePanel(parent, name, anchorMin, anchorMax);
+            rect.GetComponent<Image>().color = color;
+            return rect;
+        }
+
+        public static RectTransform CreateFloatingPanel(Transform parent, string name, Vector2 size, Color color)
+        {
+            var go = new GameObject(name, typeof(RectTransform), typeof(Image));
+            var rect = (RectTransform)go.transform;
+            rect.SetParent(parent, false);
+            rect.anchorMin = new Vector2(0.5f, 0.5f);
+            rect.anchorMax = new Vector2(0.5f, 0.5f);
+            rect.pivot = new Vector2(0.5f, 0.5f);
+            rect.anchoredPosition = Vector2.zero;
+            rect.sizeDelta = size;
+            go.GetComponent<Image>().color = color;
+            return rect;
+        }
+
+        public static RectTransform CreateScrollableGrid(Transform parent, string name, Vector2 anchorMin, Vector2 anchorMax, int columns, out RectTransform content)
+        {
+            var go = new GameObject(name, typeof(RectTransform), typeof(Image), typeof(ScrollRect));
+            var rect = (RectTransform)go.transform;
+            rect.SetParent(parent, false);
+            rect.anchorMin = anchorMin;
+            rect.anchorMax = anchorMax;
+            rect.offsetMin = Vector2.zero;
+            rect.offsetMax = Vector2.zero;
+            go.GetComponent<Image>().color = new Color(0.9f, 0.9f, 0.9f, 0.35f);
+
+            var viewportGo = new GameObject("Viewport", typeof(RectTransform), typeof(Image), typeof(Mask));
+            var viewport = (RectTransform)viewportGo.transform;
+            viewport.SetParent(rect, false);
+            viewport.anchorMin = Vector2.zero;
+            viewport.anchorMax = Vector2.one;
+            viewport.offsetMin = Vector2.zero;
+            viewport.offsetMax = Vector2.zero;
+            viewportGo.GetComponent<Image>().color = new Color(1f, 1f, 1f, 0.01f);
+
+            var contentGo = new GameObject("Content", typeof(RectTransform), typeof(GridLayoutGroup), typeof(ContentSizeFitter));
+            content = (RectTransform)contentGo.transform;
+            content.SetParent(viewport, false);
+            content.anchorMin = new Vector2(0f, 1f);
+            content.anchorMax = new Vector2(1f, 1f);
+            content.pivot = new Vector2(0.5f, 1f);
+            content.anchoredPosition = Vector2.zero;
+            content.sizeDelta = Vector2.zero;
+
+            var grid = contentGo.GetComponent<GridLayoutGroup>();
+            grid.cellSize = new Vector2(120f, 160f);
+            grid.spacing = new Vector2(8f, 8f);
+            grid.padding = new RectOffset(8, 8, 8, 8);
+            grid.constraint = GridLayoutGroup.Constraint.FixedColumnCount;
+            grid.constraintCount = columns;
+            grid.childAlignment = TextAnchor.UpperCenter;
+
+            contentGo.GetComponent<ContentSizeFitter>().verticalFit = ContentSizeFitter.FitMode.PreferredSize;
+
+            var scroll = go.GetComponent<ScrollRect>();
+            scroll.viewport = viewport;
+            scroll.content = content;
+            scroll.horizontal = false;
+            scroll.vertical = true;
+            scroll.movementType = ScrollRect.MovementType.Clamped;
             return rect;
         }
 
@@ -162,6 +231,7 @@ namespace MedicalDeck.EditorTools
             rect.sizeDelta = size;
             var image = go.GetComponent<Image>();
             image.color = color;
+            image.preserveAspect = true;
             return image;
         }
 
@@ -204,8 +274,44 @@ namespace MedicalDeck.EditorTools
 
             string folder = "Assets/Prefabs";
             if (!AssetDatabase.IsValidFolder(folder)) AssetDatabase.CreateFolder("Assets", "Prefabs");
-            string path = $"{folder}/CardViewPrefab.prefab";
-            if (AssetDatabase.LoadAssetAtPath<GameObject>(path) != null) AssetDatabase.DeleteAsset(path); var prefab = PrefabUtility.SaveAsPrefabAsset(go, path);
+            string path = AssetDatabase.GenerateUniqueAssetPath($"{folder}/CardViewPrefab.prefab");
+            var prefab = PrefabUtility.SaveAsPrefabAsset(go, path);
+            UnityEngine.Object.DestroyImmediate(go);
+            return prefab;
+        }
+
+        public static GameObject CreateCardRowPrefabAsset()
+        {
+            var go = new GameObject("CardRowPrefab", typeof(RectTransform), typeof(Image), typeof(Button));
+            var rect = (RectTransform)go.transform;
+            rect.sizeDelta = new Vector2(600, 60);
+            go.GetComponent<Image>().color = new Color(0.85f, 0.85f, 0.85f, 0.6f);
+
+            var row = go.AddComponent<DeckEditorCardRow>();
+            var nameText = CreateText(go.transform, "NameText", "Card", new Vector2(20, 0), new Vector2(180, 40), 20, TextAnchor.MiddleLeft);
+            var nameRect = (RectTransform)nameText.transform;
+            nameRect.anchorMin = new Vector2(0, 0.5f);
+            nameRect.anchorMax = new Vector2(0, 0.5f);
+            nameRect.anchoredPosition = new Vector2(15, 0);
+            nameRect.sizeDelta = new Vector2(180, 40);
+
+            var descText = CreateText(go.transform, "DescText", "Description", new Vector2(0, 0), new Vector2(280, 40), 14, TextAnchor.MiddleLeft);
+            var descRect = (RectTransform)descText.transform;
+            descRect.anchorMin = new Vector2(0.35f, 0.5f);
+            descRect.anchorMax = new Vector2(0.35f, 0.5f);
+            descRect.anchoredPosition = new Vector2(0, 0);
+            descRect.sizeDelta = new Vector2(280, 40);
+
+            var so = new SerializedObject(row);
+            SetProp(so, "cardNameText", nameText);
+            SetProp(so, "descriptionText", descText);
+            SetProp(so, "actionButton", go.GetComponent<Button>());
+            so.ApplyModifiedPropertiesWithoutUndo();
+
+            string folder = "Assets/Prefabs";
+            if (!AssetDatabase.IsValidFolder(folder)) AssetDatabase.CreateFolder("Assets", "Prefabs");
+            string path = AssetDatabase.GenerateUniqueAssetPath($"{folder}/CardRowPrefab.prefab");
+            var prefab = PrefabUtility.SaveAsPrefabAsset(go, path);
             UnityEngine.Object.DestroyImmediate(go);
             return prefab;
         }
@@ -214,96 +320,27 @@ namespace MedicalDeck.EditorTools
         {
             var go = new GameObject("CardTilePrefab", typeof(RectTransform), typeof(Image), typeof(Button));
             var rect = (RectTransform)go.transform;
-            rect.sizeDelta = new Vector2(140, 190);
+            rect.sizeDelta = new Vector2(120f, 160f);
             go.GetComponent<Image>().color = new Color(0.92f, 0.92f, 0.92f);
 
             var row = go.AddComponent<DeckEditorCardRow>();
-
-            var artImage = CreateImage(go.transform, "Art", new Vector2(0, 15), new Vector2(120, 120), new Color(0.7f, 0.7f, 0.7f));
-            var nameText = CreateText(go.transform, "NameText", "Card", new Vector2(0, -78), new Vector2(132, 26), 17, TextAnchor.MiddleCenter);
-            var countText = CreateText(go.transform, "CountText", "", new Vector2(48, 82), new Vector2(48, 24), 20, TextAnchor.UpperRight);
-            countText.color = new Color(0.1f, 0.1f, 0.5f);
+            var art = CreateImage(go.transform, "Art", new Vector2(0, 42), new Vector2(100, 100), new Color(0.65f, 0.65f, 0.65f));
+            var nameText = CreateText(go.transform, "NameText", "Card", new Vector2(0, -18), new Vector2(110, 24), 16, TextAnchor.MiddleCenter);
+            var countText = CreateText(go.transform, "CountText", "x0", new Vector2(0, -42), new Vector2(110, 20), 14, TextAnchor.MiddleCenter);
 
             var so = new SerializedObject(row);
             SetProp(so, "cardNameText", nameText);
             SetProp(so, "countText", countText);
-            SetProp(so, "artImage", artImage);
+            SetProp(so, "artImage", art);
             SetProp(so, "actionButton", go.GetComponent<Button>());
             so.ApplyModifiedPropertiesWithoutUndo();
 
             string folder = "Assets/Prefabs";
             if (!AssetDatabase.IsValidFolder(folder)) AssetDatabase.CreateFolder("Assets", "Prefabs");
-            string path = $"{folder}/CardTilePrefab.prefab";
-            if (AssetDatabase.LoadAssetAtPath<GameObject>(path) != null) AssetDatabase.DeleteAsset(path);
+            string path = AssetDatabase.GenerateUniqueAssetPath($"{folder}/CardTilePrefab.prefab");
             var prefab = PrefabUtility.SaveAsPrefabAsset(go, path);
             UnityEngine.Object.DestroyImmediate(go);
             return prefab;
-        }
-
-        public static void AddCardGridLayout(RectTransform panel, float topPadding = 44f)
-        {
-            var grid = panel.gameObject.AddComponent<GridLayoutGroup>();
-            grid.cellSize = new Vector2(140, 190);
-            grid.spacing = new Vector2(14, 14);
-            grid.padding = new RectOffset(12, 12, Mathf.RoundToInt(topPadding), 12);
-            grid.childAlignment = TextAnchor.UpperCenter;
-            grid.constraint = GridLayoutGroup.Constraint.Flexible;
-        }
-
-        public static RectTransform CreateScrollableGrid(Transform parent, string name, Vector2 anchorMin, Vector2 anchorMax, int columns, out RectTransform content)
-        {
-            var scrollRectTr = CreatePanel(parent, name, anchorMin, anchorMax, new Color(0.9f, 0.9f, 0.9f, 0.4f));
-            var scroll = scrollRectTr.gameObject.AddComponent<ScrollRect>();
-            scroll.horizontal = false;
-            scroll.vertical = true;
-            scroll.movementType = ScrollRect.MovementType.Elastic;
-            scroll.scrollSensitivity = 30f;
-
-            var viewportGo = new GameObject("Viewport", typeof(RectTransform), typeof(Image), typeof(RectMask2D)); var viewportRect = (RectTransform)viewportGo.transform;
-            viewportRect.SetParent(scrollRectTr, false);
-            StretchToParent(viewportRect, 0);
-            var viewportImage = viewportGo.GetComponent<Image>();
-            viewportImage.color = new Color(1f, 1f, 1f, 0f);
-            viewportImage.raycastTarget = true;
-
-            var contentGo = new GameObject("Content", typeof(RectTransform));
-            var contentRect = (RectTransform)contentGo.transform;
-            contentRect.SetParent(viewportRect, false);
-            contentRect.anchorMin = new Vector2(0f, 1f);
-            contentRect.anchorMax = new Vector2(1f, 1f);
-            contentRect.pivot = new Vector2(0.5f, 1f);
-            contentRect.anchoredPosition = Vector2.zero;
-            contentRect.sizeDelta = new Vector2(0f, 0f);
-
-            var grid = contentGo.AddComponent<GridLayoutGroup>();
-            grid.cellSize = new Vector2(140f, 190f);
-            grid.spacing = new Vector2(14f, 14f);
-            grid.padding = new RectOffset(12, 12, 8, 12);
-            grid.childAlignment = TextAnchor.UpperCenter;
-            grid.constraint = GridLayoutGroup.Constraint.FixedColumnCount;
-            grid.constraintCount = columns;
-
-            var fitter = contentGo.AddComponent<ContentSizeFitter>();
-            fitter.horizontalFit = ContentSizeFitter.FitMode.Unconstrained;
-            fitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
-
-            scroll.viewport = viewportRect;
-            scroll.content = contentRect;
-            content = contentRect;
-            return scrollRectTr;
-        }
-
-        public static RectTransform CreateFloatingPanel(Transform parent, string name, Vector2 size, Color color)
-        {
-            var go = new GameObject(name, typeof(RectTransform), typeof(Image));
-            var rect = (RectTransform)go.transform;
-            rect.SetParent(parent, false);
-            rect.anchorMin = Vector2.zero;
-            rect.anchorMax = Vector2.zero;
-            rect.pivot = new Vector2(0.5f, 0.5f);
-            rect.sizeDelta = size;
-            go.GetComponent<Image>().color = color;
-            return rect;
         }
 
         public static void SetProp(SerializedObject so, string field, UnityEngine.Object value)

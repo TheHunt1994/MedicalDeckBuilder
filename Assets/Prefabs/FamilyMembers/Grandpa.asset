@@ -14,5 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MedicalDeck.Data.FamilyMemberData
   memberName: Grandpa
   description: 'Eldest member of the family.  Generally easy to infect.  '
-  maxHealth: 20
-  memberArt: {fileID: 0}
+  maxHealth: 10
+  injuredBelowPercent: 80
+  memberArt: {fileID: -8977831204620303078, guid: a353b953221a85e4abe32aca409c890b, type: 3}
+  injuredArt: {fileID: -2555804186958154991, guid: a353b953221a85e4abe32aca409c890b, type: 3}
+  deadArt: {fileID: 5461815289030591040, guid: a353b953221a85e4abe32aca409c890b, type: 3}

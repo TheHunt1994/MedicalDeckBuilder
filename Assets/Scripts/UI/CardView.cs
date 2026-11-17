@@ -30,6 +30,7 @@ namespace MedicalDeck.UI
         {
             if (cardButton == null) cardButton = GetComponent<Button>();
             cardButton.onClick.AddListener(HandleClick);
+            if (artImage != null) artImage.preserveAspect = true;
         }
 
         public void Bind(CardData cardData, MatchManager matchRef, CardHandView hand)

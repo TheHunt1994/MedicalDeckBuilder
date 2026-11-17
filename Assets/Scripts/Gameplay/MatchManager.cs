@@ -198,7 +198,12 @@ namespace MedicalDeck.Gameplay
         public void SelectTarget(FamilyMember target)
         {
             if (!waitingForTarget || pendingCard == null) return;
-            if (target == null || target.IsDead) return;
+            if (target == null) return;
+            if (target.IsDead)
+            {
+                battleUI.SetPromptText("That family member is dead and cannot be targeted.");
+                return;
+            }
             if (!IsValidTarget(pendingCard, target)) return;
             pendingTarget = target;
             battleUI.SetPromptText($"Target: {target.Data.memberName}. Press Play or Discard.");
@@ -210,6 +215,12 @@ namespace MedicalDeck.Gameplay
             if (pendingCard.requiresTarget && pendingTarget == null)
             {
                 battleUI.SetPromptText("Select a target first.");
+                return false;
+            }
+            if (pendingTarget != null && pendingTarget.IsDead)
+            {
+                battleUI.SetPromptText("That target is dead and can no longer be affected.");
+                CancelPendingCard();
                 return false;
             }
 

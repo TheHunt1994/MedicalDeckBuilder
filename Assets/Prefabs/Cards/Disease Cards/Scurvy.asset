@@ -18,5 +18,8 @@ MonoBehaviour:
   cardType: 0
   validTarget: 2
   requiresTarget: 1
-  effects: []
+  effects:
+  - effectId: 0
+    amount: 1
+    duration: 9999
   cardArt: {fileID: 8208751680626105320, guid: 95c57822428335b41877b681328255c6, type: 3}

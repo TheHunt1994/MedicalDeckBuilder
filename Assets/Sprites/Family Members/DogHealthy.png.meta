@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 240d7f0c9cd15a44498246b065de348f
+guid: 3ba7a4030c584bc4cb0d35a844239f63
 TextureImporter:
   internalIDToNameTable:
   - first:
@@ -103,10 +103,10 @@ TextureImporter:
       name: DogHealthy_0
       rect:
         serializedVersion: 2
-        x: 32
+        x: 0
         y: 0
-        width: 945
-        height: 1516
+        width: 417
+        height: 956
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
